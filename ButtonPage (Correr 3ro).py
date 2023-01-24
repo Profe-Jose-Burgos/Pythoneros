@@ -9,7 +9,6 @@ import tflearn
 import random
 import numpy as np
 import pickle
-from nltk.stem import SnowballStemmer
 from nltk.stem.lancaster import LancasterStemmer
 import datetime
 from datetime import *
@@ -17,9 +16,46 @@ import discord
 import os  # default module
 from dotenv import load_dotenv
 import json
+import telebot
+from telebot.types import ReplyKeyboardMarkup
+from telebot.types import ForceReply
+from telebot.types import ReplyKeyboardRemove
 
 # stemmer=SnowballStemmer('spanish')
 stemmer = LancasterStemmer()
+
+
+# ________________ Generar citas ________________
+
+
+def random_date(start, end, fmt):
+    s = datetime.strptime(start, fmt)
+    e = datetime.strptime(end, fmt)
+    delta = e - s
+
+    appointment = s + timedelta(days=(random.random() * delta.days))
+    return appointment.strftime('%d/%m/%Y')
+
+
+def gen_cita():
+    dateObj = datetime.now()  # import date
+    todayDate = dateObj.strftime('%d/%m/%Y')  # give format
+    topDateObj = dateObj + timedelta(days=10)
+    topDate = topDateObj.strftime('%d/%m/%Y')
+    cita = random_date(todayDate, topDate, "%d/%m/%Y")
+
+    return cita
+
+
+# print("fecha de hoy ", todayDate)
+# print("fecha tope ", topDate)
+print("\n\nCita generada por el sistema: ", gen_cita())
+
+
+def upload_appointment(appointment):
+    df = pd.read_csv('informe.csv')
+    df.loc[len(df)] = [appointment]
+    df.to_csv('informe.csv', index=False)
 
 
 # _____________________________________________ PYTHON WINDOW ____________________________________________________
@@ -48,6 +84,7 @@ def ventana():
                 words, labels, training, output, data = pickle.load(f)
 
             with open('intents.json') as file:
+
                 data2 = json.load(file)
 
             if data != data2:
@@ -131,11 +168,27 @@ def ventana():
         results_index = np.argmax(results)  # La funcion argmax obtiene la probabilidad mas alta.
 
         tag = labels[results_index]
-
+        print(tag)
+        print(labels)
+        print("esto es antes del for")
         for tg in data["intents"]:
-            if tg['tag'] == tag:
-                responses = tg['responses']
-            # else if tg['tag'] == 'Cotizacion'
+
+            if tg['tag'] == "Appointment" and tg['tag'] == tag:
+                appointment = gen_cita()
+                print(tg['tag'] + "==" + 'Appointment')
+                responses = ("cita generada: ", appointment)
+                upload_appointment(appointment)
+                print("ENTRO AL OTRO IF")
+            else:
+                if tg['tag'] == tag and tg['tag'] != "intents":
+                    print(tg['tag'] + "==" + 'Appointment')
+                    responses = tg['responses']
+                    print("ENTRO AL IF")
+
+            # if tg['tag'] == tag:
+
+        # else:
+        #   responses = ("cita generada: ", gen_cita())
 
         return (random.choice(responses))
 
@@ -179,6 +232,7 @@ def ventana():
 
             ChatLog.tag_add("tag-right", "end-1c linestart", "end-1c lineend")
             ChatLog.config(state=DISABLED)
+            ChatLog.yview(END)
             """ChatLog.config(state=NORMAL)
             ChatLog.insert(END, "You: " + msg + " \n\n")
             ChatLog.config(foreground="black", font=("Verdana", 12))
@@ -260,8 +314,8 @@ def pytk():
             pass
 
         except:
-            df = pd.DataFrame(dict, index=[0])
-            df.to_csv("informe.csv", sep=";", index=False)
+            # df = pd.DataFrame(dict, index=[0])
+            # df.to_csv("informe.csv", sep=";", index=False)
             pass
 
     # _________ validar correo y telefono ________
@@ -388,7 +442,107 @@ def pytk():
     log_in.mainloop()
 
 
-# _________________________________________ LINK WITH DISCORD __________________________________________________________
+# __________________________________________ TELEGRAM BOT _____________________________________________________________
+cita = gen_cita()
+
+
+def start_telegram():
+    bot = telebot.TeleBot("5866968877:AAHxSOvDb4qvINfXcJqzCl8LDnfHIBP64xE", parse_mode=None)
+    usuarios = {}
+
+    @bot.message_handler(commands=['start', 'help'])
+    def send_welcome(message):
+        markup = ReplyKeyboardRemove()
+        bot.reply_to(message, "Hola, Bienvenido por favor usa el comando /alta para comenzar ", reply_markup=markup)
+
+    @bot.message_handler(func=lambda m: True)
+    @bot.message_handler(commands=['alta'])
+    def cmd_alta(message):
+        markup = ForceReply()
+        msg = bot.send_message(message.chat.id, "Alta fidelidad, por favor dinos tu nombre", reply_markup=markup)
+        bot.register_next_step_handler(msg, preguntar_edad)
+
+    def cmd_cita(message):
+        markup = ForceReply()
+        msg = bot.send_message(message.chat.id, "Su cita", reply_markup=markup)
+
+    def preguntar_edad(message):
+        usuarios[message.chat.id] = {}
+        usuarios[message.chat.id]["nombre"] = message.text
+        markup = ForceReply()
+        msg = bot.send_message(message.chat.id, "Danos tu edad", reply_markup=markup)
+        bot.register_next_step_handler(msg, preguntar_telefono)
+
+    def preguntar_telefono(message):
+        usuarios[message.chat.id]["edad"] = message.text
+        markup = ForceReply()
+        edad = message.text
+        print(edad)
+        if not edad.isdigit():
+            markup = ForceReply()
+            msg = bot.send_message(message.chat.id, "Error solo se permiten numeros")
+            bot.register_next_step_handler(msg, preguntar_telefono)
+        else:
+            msg = bot.send_message(message.chat.id, "Nos facilitas tu numero", reply_markup=markup)
+            bot.register_next_step_handler(msg, preguntar_correo)
+
+    def preguntar_correo(message):
+        usuarios[message.chat.id]["numero"] = message.text
+        markup = ForceReply()
+        numero = message.text
+        if not numero.isdigit():
+            markup = ForceReply()
+            msg = bot.send_message(message.chat.id, "Error solo se permiten numeros")
+            bot.register_next_step_handler(msg, preguntar_telefono)
+        else:
+            msg = bot.send_message(message.chat.id, "Nos facilitas tu correo", reply_markup=markup)
+            bot.register_next_step_handler(msg, menu)
+
+    def menu(message):
+        usuarios[message.chat.id]["correo"] = message.text
+        markup = ReplyKeyboardMarkup(one_time_keyboard=True,
+                                     input_field_placeholder="Pulse un boton",
+                                     resize_keyboard=True)
+        markup.add("Sacar Cita", "Comprar Producto", "Cotizacion", "Consula")
+        msg = bot.send_message(message.chat.id, "Que desea realizar??", reply_markup=markup)
+        bot.register_next_step_handler(msg, datos_cu)
+
+    def datos_cu(message):
+        markup = ReplyKeyboardRemove()
+        print(usuarios)
+        if message.text == "Sacar Cita":
+            msg = bot.send_message(message.chat.id, "Listo que quiere ver si cita use el comando /cita",
+                                   reply_markup=markup)
+            bot.register_next_step_handler(msg, cita_tele)
+        elif message.text == "Comprar Producto":
+            msg = bot.send_message(message.chat.id, "Que desea comprar", reply_markup=markup)
+            bot.register_next_step_handler(msg, compra)
+        elif message.text == "Consula":
+            msg = bot.send_message(message.chat.id, "Que desea conzultar?", reply_markup=markup)
+            bot.register_next_step_handler(msg, consulta)
+        elif message.text == "Cotizacion":
+            msg = bot.send_message(message.chat.id, "Que desea cotizar?", reply_markup=markup)
+            bot.register_next_step_handler(msg, menu)
+        else:
+            msg = bot.send_message(message.chat.id, "Solo se por favor selecione un recuadro", reply_markup=markup)
+            bot.register_next_step_handler(msg, datos_cu)
+
+    def consulta(message):
+        msg = bot.send_message(message.chat.id, "tipo de consulta??")
+
+    def cita_tele(message):
+        msg = bot.send_message(message.chat.id, "Sea citado ponga /consulta para saber sobre la misma")
+        cita_tl = gen_cita()
+
+    def compra(message):
+        msg = bot.send_message(message.chat.id, "Sea que desea comprar??")
+
+    def cotizar(message):
+        msg = bot.send_message(message.chat.id, "Que decea cotizar??")
+
+    bot.infinity_polling()
+
+    # _________________________________________ LINK WITH DISCORD __________________________________________________________
 
 
 def run_discord():
@@ -533,7 +687,7 @@ def run_discord():
     async def hello(ctx):
         await ctx.respond("Hey!")
 
-    bot.run(os.getenv('TOKEN'))
+    bot.run(MTA2NjkwODUzNjg2NjYxMTI2Mw.G1sH8P.CdlHfJgSuEC6WbjmtveLENX-uPtx1m7E5MBJ3c)
 
 
 # __________________________________________ BUTTON WINDOW _____________________________________________________________
@@ -606,7 +760,7 @@ shutDownTelegram_button = Button(buttonPage, height=30, width=30,
 shutDownTelegram_button.place(x=260, y=215)
 
 powerOnTelegram_button = Button(buttonPage, height=30, width=30,
-                                image=photo_powerOn, bg="white", bd=0)
+                                image=photo_powerOn, bg="white", bd=0, command=start_telegram)
 powerOnTelegram_button.place(x=215, y=215)
 
 # ____________ PYTHON BUTTON ____________
