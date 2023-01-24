@@ -22,27 +22,36 @@
 
 <p>Los botones de cada opcion son funcionables ademas, al ejecutar el ChatBot en Discord o Telegram tienen otros dos botones para el encendido y finalizado del ChatBot</p>
 
-#### Discord
-
-![44b84cf6-6919-4388-b559-a94799ce50c5](https://user-images.githubusercontent.com/117414953/214440679-3170044d-fc5f-490e-ae5a-d3f99f733844.jpg)
-
+<br>
+<div>
+  <h4> Discord</h4>
+  </div>
+  
 <p>El usuario al seleccionar la opcion de Discord, puede digirice al canal donde se establece el ChatBot y podra interactuar con el mismo.</p>
 
-#### Telegran
-
-![854ed4d6-c603-46f6-92f1-b2e47b40dd76](https://user-images.githubusercontent.com/117414953/214440148-f83bc72d-0e9b-43fc-bc9c-57603a9d6868.jpg)
+![44b84cf6-6919-4388-b559-a94799ce50c5](https://user-images.githubusercontent.com/117414953/214442366-a64eb07d-4c7f-4e9b-83b9-58270fd73a7c.jpg)
 
 
-<p>El usuario al seleccionar la opcion de Telegram, puede digirice al canal donde se establece el ChatBot y podra interactuar con el mismo.</p>
+<br>
+<div>
+  <h4> Telegran </h4>
+  </div>
+<p>De forma similar al seleccionar la opcion de Telegram, puede digirice al canal donde se establece el ChatBot y podra interactuar con el mismo.</p>
 
-<p>Los botones de cada opcion son funcionables ademas, al ejecutar el ChatBot en Discord o Telegram tienen otros dos botones para el encendido y finalizado del ChatBot</p>
+![854ed4d6-c603-46f6-92f1-b2e47b40dd76](https://user-images.githubusercontent.com/117414953/214442587-19d0c295-cf19-42b5-a5fc-6bbc22654e51.jpg)
 
-#### Log in 
+
+<br>
+<div>
+  <h4> Python </h4>
+  <h4> Log in</h4>
+  </div>
+
 <p>Al ingresar en la opcion Python, muestra una pantalla donde se realiza la captura de datos de los usuario, los mismo son almacenados en un archivo 'csv' </p>
 
 ![Screenshot 2023-01-24 132239](https://user-images.githubusercontent.com/117414953/214383012-34b833fc-c5b3-4075-b704-cee1820e3a8e.png)
 
-<p> Archivo csv </p>
+<p> Archivo csv generado</p>
 
 ![image](https://user-images.githubusercontent.com/117414953/214440566-85d254eb-f514-4d38-8d32-0136e53162a5.png)
 
