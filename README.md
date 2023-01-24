@@ -10,9 +10,11 @@
  </ul>
  
 <br></br>
-###  Documentacion - ChatBot
+<div>
+  <h2>Proyecto ChatBot with IA</h2>
+</div>
 
-
+###  Funcionamiento 
 #### Inicio 
 <p>Se realizo una ventana de inicio donde puede elegir tres opciones para utilizar el ChatBot (Discord, Telegram o Python con interfaz) </p>
 
@@ -22,11 +24,11 @@
 
 
 #### Log in 
-<p>Al ingresar en la opcion Python, muestra una pantalla donde se realiza la captura de datos de los usuario </p>
+<p>Al ingresar en la opcion Python, muestra una pantalla donde se realiza la captura de datos de los usuario, los mismo son almacenados en un archivo 'csv' </p>
 
 ![Screenshot 2023-01-24 132239](https://user-images.githubusercontent.com/117414953/214383012-34b833fc-c5b3-4075-b704-cee1820e3a8e.png)
 
 #### ChaBot con Intefaz Tkinter 
-<p>Al Una vez registrado el usuario, desplega la nueva ventana que muestra el ChatBot </p>
+<p>Al Una vez registrado el usuario, desplega la nueva ventana que muestra el ChatBot y el usuario puede interacturar realizando consultas, citas, entre otros</p>
 
 ![Screenshot 2023-01-24 132328](https://user-images.githubusercontent.com/117414953/214385451-83da99b9-9592-4b22-a222-1ee0b2c119e7.png)
