@@ -22,11 +22,29 @@
 
 <p>Los botones de cada opcion son funcionables ademas, al ejecutar el ChatBot en Discord o Telegram tienen otros dos botones para el encendido y finalizado del ChatBot</p>
 
+#### Discord
+
+![44b84cf6-6919-4388-b559-a94799ce50c5](https://user-images.githubusercontent.com/117414953/214440679-3170044d-fc5f-490e-ae5a-d3f99f733844.jpg)
+
+<p>El usuario al seleccionar la opcion de Discord, puede digirice al canal donde se establece el ChatBot y podra interactuar con el mismo.</p>
+
+#### Telegran
+
+![854ed4d6-c603-46f6-92f1-b2e47b40dd76](https://user-images.githubusercontent.com/117414953/214440148-f83bc72d-0e9b-43fc-bc9c-57603a9d6868.jpg)
+
+
+<p>El usuario al seleccionar la opcion de Telegram, puede digirice al canal donde se establece el ChatBot y podra interactuar con el mismo.</p>
+
+<p>Los botones de cada opcion son funcionables ademas, al ejecutar el ChatBot en Discord o Telegram tienen otros dos botones para el encendido y finalizado del ChatBot</p>
 
 #### Log in 
 <p>Al ingresar en la opcion Python, muestra una pantalla donde se realiza la captura de datos de los usuario, los mismo son almacenados en un archivo 'csv' </p>
 
 ![Screenshot 2023-01-24 132239](https://user-images.githubusercontent.com/117414953/214383012-34b833fc-c5b3-4075-b704-cee1820e3a8e.png)
+
+<p> Archivo csv </p>
+
+![image](https://user-images.githubusercontent.com/117414953/214440566-85d254eb-f514-4d38-8d32-0136e53162a5.png)
 
 #### ChaBot con Intefaz Tkinter 
 <p>Al Una vez registrado el usuario, desplega la nueva ventana que muestra el ChatBot y el usuario puede interacturar realizando consultas, citas, entre otros</p>
