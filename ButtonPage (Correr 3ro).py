@@ -506,7 +506,21 @@ def start_telegram():
         markup.add("Sacar Cita", "Comprar Producto", "Cotizacion", "Consula")
         msg = bot.send_message(message.chat.id, "Que desea realizar??", reply_markup=markup)
         bot.register_next_step_handler(msg, datos_cu)
+        print(usuarios)
+        fromTelegram_save_to_csv(usuarios)
 
+    def fromTelegram_save_to_csv(usuarios):
+
+        try:
+            df = pd.DataFrame(usuarios)
+            print(df)
+            df.to_csv("informeTelegram.csv", sep=";", mode='a', index=False, header=False)
+            pass
+
+        except:
+            # df = pd.DataFrame(dict, index=[0])
+            # df.to_csv("informe.csv", sep=";", index=False)
+            pass
     def datos_cu(message):
         markup = ReplyKeyboardRemove()
         print(usuarios)
@@ -549,7 +563,6 @@ def run_discord():
     buttonPage.destroy()
     stemmer = LancasterStemmer()
     tag = ''
-
     with open('intents.json') as json_data:
         intents = json.load(json_data)
 
@@ -558,6 +571,7 @@ def run_discord():
     documents = []
     ignore_words = ['?', '¿']
     print("Looping through the Intents to Convert them to words, classes, documents and ignore_words.......")
+
     for intent in intents['intents']:
         for pattern in intent['patterns']:
             # tokenize each word in the sentence
@@ -587,17 +601,17 @@ def run_discord():
 
     print("Creating Traning Set, Bag of Words for our Model....")
     for doc in documents:
-        # initialize our bag of words
+            # initialize our bag of words
         bag = []
-        # list of tokenized words for the pattern
+            # list of tokenized words for the pattern
         pattern_words = doc[0]
-        # stem each word
+            # stem each word
         pattern_words = [stemmer.stem(word.lower()) for word in pattern_words]
-        # create our bag of words array
+            # create our bag of words array
         for w in words:
             bag.append(1) if w in pattern_words else bag.append(0)
 
-        # output is a '0' for each tag and '1' for current tag
+            # output is a '0' for each tag and '1' for current tag
         output_row = list(output_empty)
         output_row[classes.index(doc[1])] = 1
 
@@ -646,7 +660,7 @@ def run_discord():
         return_list = []
         for r in results:
             return_list.append((classes[r[0]], r[1]))  # Tuppl -> Intent and Probability
-        return return_list
+            return return_list
 
     def response(sentence, userID='123', show_details=False):
         results = classify(sentence)
@@ -671,24 +685,23 @@ def run_discord():
 
         if tag != 'greeting':
             if message.author != bot.user:
-                # SENDS BACK A MESSAGE TO THE CHANNEL.
+                    # SENDS BACK A MESSAGE TO THE CHANNEL.
                 await message.channel.send(random.choice(response(message.content)['responses']))
                 tag = response(message.content)['tag']
-        else:
-            nombre = ''
-            for i in message.content:
-                if (i.isnumeric()) == False:
-                    nombre += i
+            else:
+                nombre = ''
+                for i in message.content:
+                    if (i.isnumeric()) == False:
+                        nombre += i
             if message.author != bot.user:
-                await message.channel.send(('Bienvenido ' + nombre))
-                tag = response(message.content)['tag']
+                    await message.channel.send(('Bienvenido ' + nombre))
+                    tag = response(message.content)['tag']
 
     @bot.slash_command(name="hello", description="Say hello to the bot")
     async def hello(ctx):
         await ctx.respond("Hey!")
 
-    bot.run(MTA2NjkwODUzNjg2NjYxMTI2Mw.G1sH8P.CdlHfJgSuEC6WbjmtveLENX-uPtx1m7E5MBJ3c)
-
+    bot.run(os.getenv('TOKEN'))
 
 # __________________________________________ BUTTON WINDOW _____________________________________________________________
 
